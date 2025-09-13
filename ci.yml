@@ -1,0 +1,28 @@
+name: wallet-ci
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install -r core/requirements.txt
+
+      - name: Run basic test
+        run: |
+          python -c "import fastapi, cryptography; print('✅ Wallet deps OK')"
+
+      - name: Build Docker image
+        run: docker build -t hacswallet ./core
